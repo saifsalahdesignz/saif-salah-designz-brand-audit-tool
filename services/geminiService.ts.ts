@@ -1,12 +1,10 @@
 import { GoogleGenAI, Modality } from "@google/genai";
 import type { AuditFormData, AuditReport } from '../types';
 
-// FIX: Switched from import.meta.env.VITE_API_KEY to process.env.API_KEY as per guidelines.
 if (!process.env.API_KEY) {
     throw new Error("API_KEY environment variable not set");
 }
 
-// FIX: Switched from import.meta.env.VITE_API_KEY to process.env.API_KEY as per guidelines.
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const SYSTEM_INSTRUCTION = `You are an advanced AI brand audit specialist for Saif Salah Designz. You operate as a series of independent analysis modules. Your primary function is to browse the live web, extract specific data points, and populate a JSON structure.
@@ -245,15 +243,11 @@ export const generatePlaceholderImage = async (prompt: string): Promise<string> 
             },
         });
 
-        const candidate = response.candidates?.[0];
-        if (candidate) {
-            for (const part of candidate.content.parts) {
-                if (part.inlineData) {
-                    return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
-                }
+        for (const part of response.candidates[0].content.parts) {
+            if (part.inlineData) {
+                return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
             }
         }
-        
         console.error("No image data found in response for prompt:", prompt);
         return ""; // Return empty string on failure to find image data
 
