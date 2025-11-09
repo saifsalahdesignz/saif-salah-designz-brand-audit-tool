@@ -1,9 +1,9 @@
 
+
 import { GoogleGenAI, Modality } from "@google/genai";
 import type { AuditFormData, AuditReport } from '../types';
 
-// This is the browser-safe way to access environment variables in a Vite project.
-// Fix: Per coding guidelines, API key must be obtained from process.env.API_KEY. This also resolves the TypeScript error.
+// Fix: Per coding guidelines, the API key must be obtained exclusively from `process.env.API_KEY`. This change also resolves the TypeScript errors.
 if (!process.env.API_KEY) {
     // This error will now be more informative if the key is missing on Netlify.
     throw new Error("API_KEY environment variable not set. Please set it in your Netlify environment variables.");
