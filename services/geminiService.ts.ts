@@ -1,12 +1,14 @@
 import { GoogleGenAI, Modality } from "@google/genai";
 import type { AuditFormData, AuditReport } from '../types';
 
-// Fix: Per coding guidelines, the API key must be obtained from process.env.API_KEY.
-if (!process.env.API_KEY) {
+// Per coding guidelines, the API key must be obtained from process.env.API_KEY.
+const API_KEY = process.env.API_KEY;
+
+if (!API_KEY) {
     throw new Error("API_KEY environment variable not set");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 const SYSTEM_INSTRUCTION = `You are an advanced AI brand audit specialist for Saif Salah Designz. You operate as a series of independent analysis modules. Your primary function is to browse the live web, extract specific data points, and populate a JSON structure.
 
@@ -147,7 +149,8 @@ export const generateBrandAudit = async (formData: AuditFormData): Promise<Audit
             },
         });
         
-        const rawText = (response.text || '').trim();
+        // Per Gemini API guidelines, response.text provides the string output directly.
+        const rawText = response.text.trim();
         let jsonText = '';
 
         // First, try to extract JSON from a markdown code fence.
