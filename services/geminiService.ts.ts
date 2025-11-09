@@ -1,12 +1,11 @@
 import { GoogleGenAI, Modality } from "@google/genai";
 import type { AuditFormData, AuditReport } from '../types';
 
-// Fix: Use process.env.API_KEY to access the environment variable as per the guidelines.
+// Fix: Per coding guidelines, the API key must be obtained from process.env.API_KEY.
 if (!process.env.API_KEY) {
     throw new Error("API_KEY environment variable not set");
 }
 
-// Fix: Use process.env.API_KEY to access the environment variable as per the guidelines.
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const SYSTEM_INSTRUCTION = `You are an advanced AI brand audit specialist for Saif Salah Designz. You operate as a series of independent analysis modules. Your primary function is to browse the live web, extract specific data points, and populate a JSON structure.
