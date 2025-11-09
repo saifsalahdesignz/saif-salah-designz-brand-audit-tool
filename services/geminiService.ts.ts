@@ -1,15 +1,15 @@
 
-
 import { GoogleGenAI, Modality } from "@google/genai";
 import type { AuditFormData, AuditReport } from '../types';
 
-// Fix: Per coding guidelines, API key must be obtained from process.env.API_KEY.
-const apiKey = process.env.API_KEY;
-if (!apiKey) {
-    throw new Error("API_KEY environment variable not set");
+// This is the browser-safe way to access environment variables in a Vite project.
+// Fix: Per coding guidelines, API key must be obtained from process.env.API_KEY. This also resolves the TypeScript error.
+if (!process.env.API_KEY) {
+    // This error will now be more informative if the key is missing on Netlify.
+    throw new Error("API_KEY environment variable not set. Please set it in your Netlify environment variables.");
 }
 
-const ai = new GoogleGenAI({ apiKey });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const SYSTEM_INSTRUCTION = `You are an advanced AI brand audit specialist for Saif Salah Designz. You operate as a series of independent analysis modules. Your primary function is to browse the live web, extract specific data points, and populate a JSON structure.
 
