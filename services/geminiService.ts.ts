@@ -1,12 +1,15 @@
+
+
 import { GoogleGenAI, Modality } from "@google/genai";
 import type { AuditFormData, AuditReport } from '../types';
 
-// FIX: Use process.env.API_KEY as per the guidelines to resolve the TypeScript error and align with requirements.
-if (!process.env.API_KEY) {
+// Fix: Per coding guidelines, API key must be obtained from process.env.API_KEY.
+const apiKey = process.env.API_KEY;
+if (!apiKey) {
     throw new Error("API_KEY environment variable not set");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey });
 
 const SYSTEM_INSTRUCTION = `You are an advanced AI brand audit specialist for Saif Salah Designz. You operate as a series of independent analysis modules. Your primary function is to browse the live web, extract specific data points, and populate a JSON structure.
 
@@ -147,18 +150,15 @@ export const generateBrandAudit = async (formData: AuditFormData): Promise<Audit
             },
         });
         
-        // Per Gemini API guidelines, response.text provides the string output directly.
         const rawText = response.text.trim();
         let jsonText = '';
 
-        // First, try to extract JSON from a markdown code fence.
         const markdownRegex = /```(?:json)?\s*(\{[\s\S]*\})\s*```/;
         const markdownMatch = rawText.match(markdownRegex);
         
         if (markdownMatch && markdownMatch[1]) {
             jsonText = markdownMatch[1];
         } else {
-            // If no markdown fence is found, use a more robust brace-counting method 
             const firstBrace = rawText.indexOf('{');
             if (firstBrace === -1) {
                 console.error("No JSON object start found in AI response", rawText);
