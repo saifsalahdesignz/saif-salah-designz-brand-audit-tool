@@ -1,14 +1,12 @@
 import { GoogleGenAI, Modality } from "@google/genai";
 import type { AuditFormData, AuditReport } from '../types';
 
-// Per coding guidelines, the API key must be obtained from process.env.API_KEY.
-const API_KEY = process.env.API_KEY;
-
-if (!API_KEY) {
+// FIX: Use process.env.API_KEY as per the guidelines to resolve the TypeScript error and align with requirements.
+if (!process.env.API_KEY) {
     throw new Error("API_KEY environment variable not set");
 }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const SYSTEM_INSTRUCTION = `You are an advanced AI brand audit specialist for Saif Salah Designz. You operate as a series of independent analysis modules. Your primary function is to browse the live web, extract specific data points, and populate a JSON structure.
 
