@@ -1,10 +1,12 @@
 import { GoogleGenAI, Modality } from "@google/genai";
 import type { AuditFormData, AuditReport } from '../types';
 
+// Fix: Use process.env.API_KEY to access the environment variable as per the guidelines.
 if (!process.env.API_KEY) {
     throw new Error("API_KEY environment variable not set");
 }
 
+// Fix: Use process.env.API_KEY to access the environment variable as per the guidelines.
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const SYSTEM_INSTRUCTION = `You are an advanced AI brand audit specialist for Saif Salah Designz. You operate as a series of independent analysis modules. Your primary function is to browse the live web, extract specific data points, and populate a JSON structure.
@@ -243,7 +245,7 @@ export const generatePlaceholderImage = async (prompt: string): Promise<string> 
             },
         });
 
-        for (const part of response.candidates[0].content.parts) {
+        for (const part of response.candidates?.[0]?.content?.parts || []) {
             if (part.inlineData) {
                 return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
             }
