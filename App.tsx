@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { AuditFormData, AuditReport, PlaceholderImages } from './types';
-import { generateBrandAudit, generatePlaceholderImage } from './services/geminiService';
-import Header from './components/Header';
-import AuditForm from './components/AuditForm';
-import Loader from './components/Loader';
-import ReportView from './components/ReportView';
-import Guide from './components/Guide';
+import { AuditFormData, AuditReport, PlaceholderImages } from './types.ts';
+import { generateBrandAudit, generatePlaceholderImage } from './services/geminiService.ts';
+import Header from './components/Header.tsx';
+import AuditForm from './components/AuditForm.tsx';
+import Loader from './components/Loader.tsx';
+import ReportView from './components/ReportView.tsx';
+import Guide from './components/Guide.tsx';
 
 export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
