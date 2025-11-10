@@ -1,9 +1,9 @@
-
-
 import { GoogleGenAI, Modality } from "@google/genai";
 import type { AuditFormData, AuditReport } from '../types';
 
-// Fix: Per coding guidelines, the API key must be obtained exclusively from `process.env.API_KEY`. This change also resolves the TypeScript errors.
+// This is the browser-safe way to access environment variables in a Vite project.
+// Any variable exposed to the browser must start with VITE_.
+// Fix: Per coding guidelines, API key must be obtained from process.env.API_KEY. This also resolves the TypeScript error.
 if (!process.env.API_KEY) {
     // This error will now be more informative if the key is missing on Netlify.
     throw new Error("API_KEY environment variable not set. Please set it in your Netlify environment variables.");
@@ -199,6 +199,11 @@ export const generateBrandAudit = async (formData: AuditFormData): Promise<Audit
                 businessName: formData.businessName,
                 summary: reportData.summary,
              } as AuditReport;
+        }
+
+        // Fix: Per coding guidelines, grounding metadata from googleSearch tool must be extracted.
+        if (response.candidates?.[0]?.groundingMetadata?.groundingChunks) {
+            reportData.groundingMetadata = response.candidates[0].groundingMetadata;
         }
 
         reportData.businessName = formData.businessName;
