@@ -1,15 +1,14 @@
 import { GoogleGenAI, Modality } from "@google/genai";
 import type { AuditFormData, AuditReport } from '../types';
 
-// This is the browser-safe way to access environment variables in a Vite project.
-// Any variable exposed to the browser must start with VITE_.
-// Fix: Per coding guidelines, API key must be obtained from process.env.API_KEY. This also resolves the TypeScript error.
-if (!process.env.API_KEY) {
-    // This error will now be more informative if the key is missing on Netlify.
-    throw new Error("API_KEY environment variable not set. Please set it in your Netlify environment variables.");
-}
-
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Helper to get the client lazily. This prevents top-level crashes.
+const getAiClient = () => {
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    throw new Error("API Key is missing. Please set API_KEY or VITE_API_KEY in your Netlify environment variables.");
+  }
+  return new GoogleGenAI({ apiKey: apiKey });
+};
 
 const SYSTEM_INSTRUCTION = `You are an advanced AI brand audit specialist for Saif Salah Designz. You operate as a series of independent analysis modules. Your primary function is to browse the live web, extract specific data points, and populate a JSON structure.
 
@@ -138,6 +137,7 @@ ${competitorData}
 
 
 export const generateBrandAudit = async (formData: AuditFormData): Promise<AuditReport> => {
+    const ai = getAiClient();
     const prompt = buildPrompt(formData);
     try {
         const response = await ai.models.generateContent({
@@ -201,7 +201,6 @@ export const generateBrandAudit = async (formData: AuditFormData): Promise<Audit
              } as AuditReport;
         }
 
-        // Fix: Per coding guidelines, grounding metadata from googleSearch tool must be extracted.
         if (response.candidates?.[0]?.groundingMetadata?.groundingChunks) {
             reportData.groundingMetadata = response.candidates[0].groundingMetadata;
         }
@@ -239,6 +238,7 @@ export const generateBrandAudit = async (formData: AuditFormData): Promise<Audit
 };
 
 export const generatePlaceholderImage = async (prompt: string): Promise<string> => {
+    const ai = getAiClient();
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash-image',
@@ -256,10 +256,10 @@ export const generatePlaceholderImage = async (prompt: string): Promise<string> 
             }
         }
         console.error("No image data found in response for prompt:", prompt);
-        return ""; // Return empty string on failure to find image data
+        return ""; 
 
     } catch (error) {
         console.error("Error generating placeholder image:", error);
-        return ""; // Return empty string on API error
+        return ""; 
     }
 };
