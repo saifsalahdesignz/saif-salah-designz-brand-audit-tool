@@ -141,7 +141,7 @@ export const generateBrandAudit = async (formData: AuditFormData): Promise<Audit
     const prompt = buildPrompt(formData);
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash"
+            model: "gemini-1.5-flash",
             contents: prompt,
             config: {
                  systemInstruction: SYSTEM_INSTRUCTION,
